@@ -11,8 +11,12 @@ except ImportError:
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
+from django.utils.timezone import utc
 
 from app_metrics.models import Metric, MetricItem, Gauge
+
+from people.utils import save_user_points
+
 
 # For statsd support
 try:
@@ -45,7 +49,25 @@ class MixPanelTrackError(Exception):
 @task
 def db_metric_task(slug, num=1, **kwargs):
     met = Metric.objects.get(slug=slug)
-    MetricItem.objects.create(metric=met, num=num)
+
+    if met.unique:
+        obj, created = MetricItem.objects.get_or_create(
+            metric=met, user=kwargs['user'],
+            item_content_type= kwargs['content_type'], item_object_id= kwargs['object_id'], )
+
+        if created:
+            obj.points = met.points
+            obj.num = 1
+            obj.save()
+
+            if met.points > 0:
+                save_user_points(kwargs['user'], met.points)
+    else:
+        MetricItem.objects.create(metric=met, num=num, user=kwargs['user'], points=met.points)
+        if met.points > 0:
+            save_user_points(kwargs['user'], met.points)
+
+
 
 
 @task
@@ -153,7 +175,7 @@ def redis_metric_task(slug, num=1, **kwargs):
     r = get_redis_conn()
 
     # Build keys
-    now = datetime.datetime.now()
+    now = datetime.datetime.utcnow().replace(tzinfo=utc)
     day_key = "m:%s:%s" % (slug, now.strftime("%Y-%m-%d"))
     week_key = "m:%s:w:%s" % (slug, now.strftime("%U"))
     month_key = "m:%s:m:%s" % (slug, now.strftime("%Y-%m"))

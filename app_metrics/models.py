@@ -2,15 +2,22 @@ import datetime
 
 from django.db import models, IntegrityError
 from django.template.defaultfilters import slugify
+from django.utils.timezone import utc
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes import generic
 
-from app_metrics.compat import User
+from .compat import User
 
 
 class Metric(models.Model):
     """ The type of metric we want to store """
     name = models.CharField(_('name'), max_length=50)
     slug = models.SlugField(_('slug'), unique=True, max_length=60, db_index=True)
+
+    points = models.PositiveIntegerField(default=0)
+
+    unique = models.BooleanField(default=True)
 
     class Meta:
         verbose_name = _('metric')
@@ -53,9 +60,21 @@ class MetricSet(models.Model):
 
 class MetricItem(models.Model):
     """ Individual metric items """
+    user = models.ForeignKey(User, verbose_name=_('user'), related_name="user_metricitems")
+
     metric = models.ForeignKey(Metric, verbose_name=_('metric'))
     num = models.IntegerField(_('number'), default=1)
-    created = models.DateTimeField(_('created'), default=datetime.datetime.now)
+
+    item_content_type = models.ForeignKey(ContentType, blank=True, null=True)
+    item_object_id = models.PositiveIntegerField(blank=True, null=True)
+    item_object = generic.GenericForeignKey(
+        ct_field="item_content_type",
+        fk_field="item_object_id"
+    )
+
+    points = models.PositiveIntegerField(default=0)
+
+    created = models.DateTimeField(_('created'), auto_now_add=True)
 
     class Meta:
         verbose_name = _('metric item')
@@ -146,8 +165,8 @@ class Gauge(models.Model):
     name = models.CharField(_('name'), max_length=50)
     slug = models.SlugField(_('slug'), unique=True, max_length=60)
     current_value = models.DecimalField(_('current value'), max_digits=15, decimal_places=6, default='0.00')
-    created = models.DateTimeField(_('created'), default=datetime.datetime.now)
-    updated = models.DateTimeField(_('updated'), default=datetime.datetime.now)
+    created = models.DateTimeField(_('created'), default=datetime.datetime.utcnow().replace(tzinfo=utc))
+    updated = models.DateTimeField(_('updated'), default=datetime.datetime.utcnow().replace(tzinfo=utc))
 
     class Meta:
         verbose_name = _('gauge')
@@ -160,5 +179,5 @@ class Gauge(models.Model):
         if not self.id and not self.slug:
             self.slug = slugify(self.name)
 
-        self.updated = datetime.datetime.now()
+        self.updated = datetime.datetime.utcnow().replace(tzinfo=utc)
         return super(Gauge, self).save(*args, **kwargs)
