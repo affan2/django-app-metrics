@@ -53,7 +53,7 @@ def db_metric_task(slug, num=1, **kwargs):
     if met.unique:
         obj, created = MetricItem.objects.get_or_create(
             metric=met, user=kwargs['user'],
-            item_content_type= kwargs['content_type'], item_object_id= kwargs['object_id'], )
+            item_content_type=kwargs['content_type'], item_object_id=kwargs['object_id'], )
 
         if created:
             obj.points = met.points
