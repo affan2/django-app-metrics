@@ -14,6 +14,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.utils.timezone import utc
 
 from app_metrics.models import Metric, MetricItem, Gauge
+from brabeion import badges
 
 from people.utils import save_user_points
 
@@ -66,6 +67,9 @@ def db_metric_task(slug, num=1, **kwargs):
         MetricItem.objects.create(metric=met, num=num, user=kwargs['user'], points=met.points)
         if met.points > 0:
             save_user_points(kwargs['user'], met.points)
+
+    if kwargs.get('badge'):
+        badges.possibly_award_badge(kwargs['badge']['event'], **kwargs['badge']['state'])
 
 
 
