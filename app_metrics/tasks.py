@@ -15,6 +15,7 @@ from django.utils.timezone import utc
 
 from app_metrics.models import Metric, MetricItem, Gauge
 from brabeion import badges
+from actstream import action
 
 from people.utils import save_user_points
 
@@ -50,10 +51,11 @@ class MixPanelTrackError(Exception):
 @task
 def db_metric_task(slug, num=1, **kwargs):
     met = Metric.objects.get(slug=slug)
+    user = kwargs['user']
 
     if met.unique:
         obj, created = MetricItem.objects.get_or_create(
-            metric=met, user=kwargs['user'],
+            metric=met, user=user,
             item_content_type=kwargs['content_type'], item_object_id=kwargs['object_id'], )
 
         if created:
@@ -62,16 +64,14 @@ def db_metric_task(slug, num=1, **kwargs):
             obj.save()
 
             if met.points > 0:
-                save_user_points(kwargs['user'], met.points)
+                save_user_points(user, met.points)
     else:
-        MetricItem.objects.create(metric=met, num=num, user=kwargs['user'], points=met.points)
+        MetricItem.objects.create(metric=met, num=num, user=user, points=met.points)
         if met.points > 0:
-            save_user_points(kwargs['user'], met.points)
+            save_user_points(user, met.points)
 
     if kwargs.get('badge'):
         badges.possibly_award_badge(kwargs['badge']['event'], **kwargs['badge']['state'])
-
-
 
 
 @task
