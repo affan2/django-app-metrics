@@ -9,6 +9,9 @@ try:
 except ImportError:
     from celery.decorators import task
 
+from johnny.utils import celery_enable_all
+celery_enable_all()
+
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.timezone import utc
