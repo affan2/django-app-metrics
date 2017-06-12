@@ -1,4 +1,5 @@
-import datetime 
+import datetime
+from django.conf import settings
 from django.core.management.base import NoArgsCommand 
 
 from app_metrics.models import Metric, MetricItem, MetricDay, MetricWeek, MetricMonth, MetricYear 
@@ -21,7 +22,7 @@ class Command(NoArgsCommand):
             return 
 
         # Aggregate Items
-        items = MetricItem.objects.all() 
+        items = MetricItem.objects.filter(site_id=settings.SITE_ID)
 
         for i in items: 
             # Daily Aggregation 

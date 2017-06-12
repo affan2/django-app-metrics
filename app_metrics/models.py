@@ -1,5 +1,7 @@
 import datetime
 
+from django.conf import settings
+from django.contrib.sites.models import Site
 from django.db import models, IntegrityError
 from django.template.defaultfilters import slugify
 from django.utils.timezone import utc
@@ -61,20 +63,17 @@ class MetricSet(models.Model):
 class MetricItem(models.Model):
     """ Individual metric items """
     user = models.ForeignKey(User, verbose_name=_('user'), related_name="user_metricitems")
-
     metric = models.ForeignKey(Metric, verbose_name=_('metric'))
     num = models.IntegerField(_('number'), default=1)
-
     item_content_type = models.ForeignKey(ContentType, blank=True, null=True)
     item_object_id = models.PositiveIntegerField(blank=True, null=True)
     item_object = generic.GenericForeignKey(
         ct_field="item_content_type",
         fk_field="item_object_id"
     )
-
     points = models.PositiveIntegerField(default=0)
-
     created = models.DateTimeField(_('created'), auto_now_add=True)
+    site = models.ForeignKey(Site, default=settings.SITE_ID, verbose_name='site')
 
     class Meta:
         verbose_name = _('metric item')

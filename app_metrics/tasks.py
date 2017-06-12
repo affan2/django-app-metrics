@@ -58,8 +58,12 @@ def db_metric_task(slug, num=1, **kwargs):
 
     if met.unique:
         obj, created = MetricItem.objects.get_or_create(
-            metric=met, user=user,
-            item_content_type=kwargs['content_type'], item_object_id=kwargs['object_id'], )
+            metric=met,
+            user=user,
+            item_content_type=kwargs['content_type'],
+            item_object_id=kwargs['object_id'],
+            site_id=settings.SITE_ID
+        )
 
         if created:
             obj.points = met.points
@@ -69,7 +73,7 @@ def db_metric_task(slug, num=1, **kwargs):
             if met.points > 0:
                 save_user_points(user, met.points)
     else:
-        MetricItem.objects.create(metric=met, num=num, user=user, points=met.points)
+        MetricItem.objects.create(metric=met, num=num, user=user, points=met.points, site_id=settings.SITE_ID)
         if met.points > 0:
             save_user_points(user, met.points)
 

@@ -1,5 +1,6 @@
 from django.core.management.base import NoArgsCommand
 
+from django.conf import settings
 from app_metrics.models import MetricItem
 from app_metrics.backends.mixpanel import metric
 from app_metrics.utils import get_backend
@@ -19,7 +20,7 @@ class Command(NoArgsCommand):
             print "You need to set the backend to MixPanel"
             return
 
-        items = MetricItem.objects.all()
+        items = MetricItem.objects.filter(site_id=settings.SITE_ID)
 
         for i in items:
             properties = {

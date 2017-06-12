@@ -1,5 +1,6 @@
 import datetime
 
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 
 from app_metrics.models import Metric, MetricItem, MetricDay, MetricWeek, MetricMonth, MetricYear
@@ -30,7 +31,7 @@ def trending_for_metric(metric=None, date=None):
 
 def _trending_for_current_day(metric=None):
     date = datetime.date.today()
-    unaggregated_values = MetricItem.objects.filter(metric=metric)
+    unaggregated_values = MetricItem.objects.filter(metric=metric, site_id=settings.SITE_ID)
     aggregated_values = MetricDay.objects.filter(metric=metric, created=date)
     count = 0
 
