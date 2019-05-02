@@ -12,6 +12,7 @@ class MetricAdmin(admin.ModelAdmin):
     def slug(self, obj):
         return obj.metric.slug
 
+
 admin.site.register(Metric)
 admin.site.register(MetricSet)
 admin.site.register(MetricDay, MetricAdmin)

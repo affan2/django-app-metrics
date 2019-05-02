@@ -7,7 +7,7 @@ from django.template.defaultfilters import slugify
 from django.utils.timezone import utc
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.fields import GenericForeignKey
 
 from .compat import User
 
@@ -62,18 +62,18 @@ class MetricSet(models.Model):
 
 class MetricItem(models.Model):
     """ Individual metric items """
-    user = models.ForeignKey(User, verbose_name=_('user'), related_name="user_metricitems")
-    metric = models.ForeignKey(Metric, verbose_name=_('metric'))
+    user = models.ForeignKey(User, verbose_name=_('user'), related_name="user_metricitems", on_delete=models.CASCADE, )
+    metric = models.ForeignKey(Metric, verbose_name=_('metric'), on_delete=models.CASCADE, )
     num = models.IntegerField(_('number'), default=1)
-    item_content_type = models.ForeignKey(ContentType, blank=True, null=True)
+    item_content_type = models.ForeignKey(ContentType, blank=True, null=True, on_delete=models.CASCADE, )
     item_object_id = models.PositiveIntegerField(blank=True, null=True)
-    item_object = generic.GenericForeignKey(
+    item_object = GenericForeignKey(
         ct_field="item_content_type",
         fk_field="item_object_id"
     )
     points = models.PositiveIntegerField(default=0)
     created = models.DateTimeField(_('created'), auto_now_add=True)
-    site = models.ForeignKey(Site, default=settings.SITE_ID, verbose_name='site')
+    site = models.ForeignKey(Site, default=settings.SITE_ID, verbose_name='site', on_delete=models.CASCADE, )
 
     class Meta:
         verbose_name = _('metric item')
@@ -89,7 +89,7 @@ class MetricItem(models.Model):
 
 class MetricDay(models.Model):
     """ Aggregation of Metrics on a per day basis """
-    metric = models.ForeignKey(Metric, verbose_name=_('metric'))
+    metric = models.ForeignKey(Metric, verbose_name=_('metric'), on_delete=models.CASCADE, )
     num = models.BigIntegerField(_('number'), default=0)
     created = models.DateField(_('created'), default=datetime.date.today)
 
@@ -106,7 +106,7 @@ class MetricDay(models.Model):
 
 class MetricWeek(models.Model):
     """ Aggregation of Metrics on a weekly basis """
-    metric = models.ForeignKey(Metric, verbose_name=_('metric'))
+    metric = models.ForeignKey(Metric, verbose_name=_('metric'), on_delete=models.CASCADE, )
     num = models.BigIntegerField(_('number'), default=0)
     created = models.DateField(_('created'), default=datetime.date.today)
 
@@ -124,7 +124,7 @@ class MetricWeek(models.Model):
 
 class MetricMonth(models.Model):
     """ Aggregation of Metrics on monthly basis """
-    metric = models.ForeignKey(Metric, verbose_name=('metric'))
+    metric = models.ForeignKey(Metric, verbose_name=('metric'), on_delete=models.CASCADE, )
     num = models.BigIntegerField(_('number'), default=0)
     created = models.DateField(_('created'), default=datetime.date.today)
 
@@ -142,7 +142,7 @@ class MetricMonth(models.Model):
 
 class MetricYear(models.Model):
     """ Aggregation of Metrics on a yearly basis """
-    metric = models.ForeignKey(Metric, verbose_name=_('metric'))
+    metric = models.ForeignKey(Metric, verbose_name=_('metric'), on_delete=models.CASCADE, )
     num = models.BigIntegerField(_('number'), default=0)
     created = models.DateField(_('created'), default=datetime.date.today)
 

@@ -2,7 +2,7 @@ from contextlib import contextmanager
 import datetime
 import time
 from django.conf import settings
-from django.utils.importlib import import_module
+from importlib import import_module
 
 from app_metrics.exceptions import InvalidMetricsBackend, TimerError
 from app_metrics.models import Metric, MetricSet
@@ -52,6 +52,7 @@ def create_metric_set(name=None, metrics=None, email_recipients=None,
 
     return metric_set
 
+
 def create_metric(name, slug):
     """ Create a new type of metric to track """
 
@@ -68,6 +69,7 @@ def create_metric(name, slug):
         new_metric = Metric(name=name, slug=slug)
         new_metric.save()
         return new_metric
+
 
 def get_or_create_metric(name, slug):
     """
@@ -89,7 +91,7 @@ def import_backend():
     # Attempt to import the backend
     try:
         backend = import_module(backend_string)
-    except Exception, e:
+    except Exception as e:
         raise InvalidMetricsBackend("Could not load '%s' as a backend: %s" %
                                     (backend_string, e))
 
@@ -198,11 +200,14 @@ def gauge(slug, current_value, **kwargs):
 def week_for_date(date):
     return date - datetime.timedelta(days=date.weekday())
 
+
 def month_for_date(month):
     return month - datetime.timedelta(days=month.day-1)
 
+
 def year_for_date(year):
-    return datetime.date(year.year, 01, 01)
+    return datetime.date(year.year, 1, 1)
+
 
 def get_previous_month(date):
     if date.month == 1:
@@ -212,6 +217,7 @@ def get_previous_month(date):
     new = date
 
     return new.replace(month=month_change)
+
 
 def get_previous_year(date):
     new = date

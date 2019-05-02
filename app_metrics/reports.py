@@ -7,6 +7,7 @@ from app_metrics.trending import trending_for_metric
 
 from django.conf import settings
 
+
 def generate_report(metric_set=None, html=False):
     """ Generate a Metric Set Report """
 

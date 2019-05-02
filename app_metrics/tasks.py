@@ -1,7 +1,7 @@
 import base64
 import json
 import urllib
-import urllib2
+from urllib.request import urlopen
 import datetime
 
 try:
@@ -9,18 +9,18 @@ try:
 except ImportError:
     from celery.decorators import task
 
-from johnny.utils import celery_enable_all
-celery_enable_all()
+# from johnny.utils import celery_enable_all
+# celery_enable_all()
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.timezone import utc
 
 from app_metrics.models import Metric, MetricItem, Gauge
-from brabeion import badges
-from actstream import action
-
-from people.utils import save_user_points
+# from brabeion import badges
+# from actstream import action
+#
+# from people.utils import save_user_points
 
 
 # For statsd support
@@ -70,15 +70,15 @@ def db_metric_task(slug, num=1, **kwargs):
             obj.num = 1
             obj.save()
 
-            if met.points > 0:
-                save_user_points(user, met.points)
+            # if met.points > 0:
+            #     save_user_points(user, met.points)
     else:
         MetricItem.objects.create(metric=met, num=num, user=user, points=met.points, site_id=settings.SITE_ID)
-        if met.points > 0:
-            save_user_points(user, met.points)
+        # if met.points > 0:
+        #     save_user_points(user, met.points)
 
-    if kwargs.get('badge'):
-        badges.possibly_award_badge(kwargs['badge']['event'], **kwargs['badge']['state'])
+    # if kwargs.get('badge'):
+    #     badges.possibly_award_badge(kwargs['badge']['event'], **kwargs['badge']['state'])
 
 
 @task
@@ -118,10 +118,8 @@ def mixpanel_metric_task(slug, num, properties=None, **kwargs):
     b64_data = base64.b64encode(json.dumps(params))
 
     data = urllib.urlencode({"data": b64_data})
-    req = urllib2.Request(url, data)
-    for i in range(num):
-        response = urllib2.urlopen(req)
-        if response.read() == '0':
+    with urllib.request.urlopen(url, data) as f:
+        if f.read() == '0':
             raise MixPanelTrackError(u'MixPanel returned 0')
 
 

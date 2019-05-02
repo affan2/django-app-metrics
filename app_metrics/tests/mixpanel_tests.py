@@ -4,6 +4,7 @@ from django.core.exceptions import ImproperlyConfigured
 
 from app_metrics.utils import *
 
+
 class MixpanelMetricConfigTests(TestCase):
 
     def setUp(self):
@@ -15,6 +16,7 @@ class MixpanelMetricConfigTests(TestCase):
 
     def tearDown(self):
         settings.APP_METRICS_BACKEND = self.old_backend
+
 
 class MixpanelCreationTests(TestCase):
 
