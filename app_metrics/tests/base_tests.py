@@ -12,10 +12,11 @@ from django.core.exceptions import ImproperlyConfigured
 from app_metrics.exceptions import TimerError
 from app_metrics.models import Metric, MetricItem, MetricDay, MetricWeek, MetricMonth, MetricYear, Gauge
 from app_metrics.utils import *
-from app_metrics.trending import _trending_for_current_day, _trending_for_yesterday, _trending_for_week, _trending_for_month, _trending_for_year
+from app_metrics.trending import _trending_for_current_day, _trending_for_yesterday, _trending_for_week, \
+    _trending_for_month, _trending_for_year
+
 
 class MetricCreationTests(TestCase):
-
     def test_auto_slug_creation(self):
         new_metric = Metric.objects.create(name='foo bar')
         self.assertEqual(new_metric.name, 'foo bar')
@@ -56,6 +57,7 @@ class MetricCreationTests(TestCase):
         self.assertEqual(current_count[0].num, 1)
         self.assertEqual(current_count[1].num, 1)
         self.assertEqual(current_count[2].num, 1)
+
 
 class MetricAggregationTests(TestCase):
 
@@ -102,6 +104,7 @@ class MetricAggregationTests(TestCase):
         self.assertEqual(year1.num, 2)
         self.assertEqual(year2.num, 3)
 
+
 class DisabledTests(TestCase):
     """ Test disabling collection """
 
@@ -121,6 +124,7 @@ class DisabledTests(TestCase):
     def tearDown(self):
         settings.APP_METRICS_DISABLED = self.old_disabled
         super(DisabledTests, self).tearDown()
+
 
 class TrendingTests(TestCase):
     """ Test that our trending logic works """
@@ -217,6 +221,7 @@ class TrendingTests(TestCase):
         self.assertEqual(data['previous_month_week'], 3)
         self.assertEqual(data['previous_year_week'], 0)
 
+
 class EmailTests(TestCase):
     """ Test that our emails send properly """
     def setUp(self):
@@ -304,6 +309,7 @@ class TimerTests(TestCase):
 
     # The ``Timer.store()`` is tested as part of the statsd backend tests.
 
+
 class MixpanelCommandTest1(TestCase):
     """ Test out our management command noops """
 
@@ -320,6 +326,7 @@ class MixpanelCommandTest1(TestCase):
 
     def tearDown(self):
         settings.APP_METRICS_BACKEND = self.old_backend
+
 
 class MixpanelCommandTest2(TestCase):
     """ Test out our management command works """

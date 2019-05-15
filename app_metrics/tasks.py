@@ -51,6 +51,7 @@ class MixPanelTrackError(Exception):
 
 # DB Tasks
 
+
 @task
 def db_metric_task(slug, num=1, **kwargs):
     met = Metric.objects.get(slug=slug)
@@ -102,6 +103,7 @@ def _get_token():
         return token
 
 # Mixpanel tasks
+
 
 @task
 def mixpanel_metric_task(slug, num, properties=None, **kwargs):
@@ -166,6 +168,7 @@ def statsd_gauge_task(slug, current_value, **kwargs):
 
 # Redis tasks
 
+
 def get_redis_conn():
     if redis is None:
         raise ImproperlyConfigured("You must install 'redis' in order to use this backend.")
@@ -205,6 +208,7 @@ def redis_gauge_task(slug, current_value, **kwargs):
     r.set("g:%s" % slug, current_value)
 
 # Librato tasks
+
 
 @task
 def librato_metric_task(name, num, **kwargs):

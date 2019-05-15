@@ -8,6 +8,7 @@ from django.utils.timezone import utc
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
+from django.utils.timezone import now
 
 from .compat import User
 
@@ -164,8 +165,8 @@ class Gauge(models.Model):
     name = models.CharField(_('name'), max_length=50)
     slug = models.SlugField(_('slug'), unique=True, max_length=60)
     current_value = models.DecimalField(_('current value'), max_digits=15, decimal_places=6, default='0.00')
-    created = models.DateTimeField(_('created'), default=datetime.datetime.utcnow().replace(tzinfo=utc))
-    updated = models.DateTimeField(_('updated'), default=datetime.datetime.utcnow().replace(tzinfo=utc))
+    created = models.DateTimeField(_('created'), auto_now_add=True, blank=True)
+    updated = models.DateTimeField(_('updated'), auto_now=True, editable=False)
 
     class Meta:
         verbose_name = _('gauge')

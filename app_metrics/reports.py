@@ -11,6 +11,9 @@ from django.conf import settings
 def generate_report(metric_set=None, html=False):
     """ Generate a Metric Set Report """
 
+    if metric_set is None:
+        return None
+
     # Get trending data for each metric
     metric_trends = []
     for m in metric_set.metrics.all():
