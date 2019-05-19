@@ -26,7 +26,7 @@ class Metric(models.Model):
         verbose_name = _('metric')
         verbose_name_plural = _('metrics')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def save(self, *args, **kwargs):
@@ -57,7 +57,7 @@ class MetricSet(models.Model):
         verbose_name = _('metric set')
         verbose_name_plural = _('metric sets')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -80,7 +80,7 @@ class MetricItem(models.Model):
         verbose_name = _('metric item')
         verbose_name_plural = _('metric items')
 
-    def __unicode__(self):
+    def __str__(self):
         return _("'%(name)s' of %(num)d on %(created)s") % {
             'name': self.metric.name,
             'num': self.num,
@@ -98,7 +98,7 @@ class MetricDay(models.Model):
         verbose_name = _('day metric')
         verbose_name_plural = _('day metrics')
 
-    def __unicode__(self):
+    def __str__(self):
         return _("'%(name)s' for '%(created)s'") % {
             'name': self.metric.name,
             'created': self.created
@@ -115,7 +115,7 @@ class MetricWeek(models.Model):
         verbose_name = _('week metric')
         verbose_name_plural = _('week metrics')
 
-    def __unicode__(self):
+    def __str__(self):
         return _("'%(name)s' for week %(week)s of %(year)s") % {
             'name': self.metric.name,
             'week': self.created.strftime("%U"),
@@ -133,7 +133,7 @@ class MetricMonth(models.Model):
         verbose_name = _('month metric')
         verbose_name_plural = _('month metrics')
 
-    def __unicode__(self):
+    def __str__(self):
         return _("'%(name)s' for %(month)s %(year)s") % {
             'name': self.metric.name,
             'month': self.created.strftime("%B"),
@@ -151,7 +151,7 @@ class MetricYear(models.Model):
         verbose_name = _('year metric')
         verbose_name_plural = _('year metrics')
 
-    def __unicode__(self):
+    def __str__(self):
         return _("'%(name)s' for %(year)s") % {
             'name': self.metric.name,
             'year': self.created.strftime("%Y")
@@ -172,7 +172,7 @@ class Gauge(models.Model):
         verbose_name = _('gauge')
         verbose_name_plural = _('gauges')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def save(self, *args, **kwargs):
