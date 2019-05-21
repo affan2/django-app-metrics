@@ -60,7 +60,7 @@ class Command(BaseCommand):
             
             (message, message_html) = generate_report(s, html=True)
 
-            if message == None:
+            if message is None:
                 continue
 
             if USE_MAILER: 
