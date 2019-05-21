@@ -1,12 +1,13 @@
 import datetime
 from django.conf import settings
-from django.core.management.base import NoArgsCommand 
+from django.core.management.base import BaseCommand
 
 from app_metrics.models import Metric, MetricItem, MetricDay, MetricWeek, MetricMonth, MetricYear 
 
 from app_metrics.utils import week_for_date, month_for_date, year_for_date, get_backend 
 
-class Command(NoArgsCommand): 
+
+class Command(BaseCommand):
     help = "Aggregate Application Metrics" 
 
     requires_model_validation = True 
@@ -18,7 +19,7 @@ class Command(NoArgsCommand):
 
         # If using Mixpanel this command is a NOOP
         if backend == 'app_metrics.backends.mixpanel': 
-            print "Useless use of metrics_aggregate when using Mixpanel backend"
+            print("Useless use of metrics_aggregate when using Mixpanel backend")
             return 
 
         # Aggregate Items

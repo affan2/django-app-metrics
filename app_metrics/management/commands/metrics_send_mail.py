@@ -1,7 +1,7 @@
 import datetime 
 import string
 
-from django.core.management.base import NoArgsCommand 
+from django.core.management.base import BaseCommand
 from django.conf import settings 
 from django.db.models import Q
 from django.utils import translation
@@ -11,7 +11,8 @@ from app_metrics.reports import generate_report
 from app_metrics.models import MetricSet, Metric 
 from app_metrics.utils import get_backend 
 
-class Command(NoArgsCommand): 
+
+class Command(BaseCommand):
     help = "Send Report E-mails" 
     requires_model_validation = True 
     can_import_settings = True 
@@ -26,7 +27,7 @@ class Command(NoArgsCommand):
 
         # This command is a NOOP if using the Mixpanel backend 
         if backend == 'app_metrics.backends.mixpanel': 
-            print "Useless use of metrics_send_email when using Mixpanel backend."
+            print("Useless use of metrics_send_email when using Mixpanel backend.")
             return 
 
         # Determine if we should also send any weekly or monthly reports 
@@ -43,12 +44,14 @@ class Command(NoArgsCommand):
 
         qs = MetricSet.objects.filter(Q(no_email=False), Q(send_daily=True) | Q(send_monthly=send_monthly) | Q(send_weekly=send_weekly))
 
+        # The error warning for mailer can be ignored.
+        # That is because the if statement prevents it from being called if it is not installed.
         if "mailer" in settings.INSTALLED_APPS: 
             from mailer import send_html_mail 
             USE_MAILER = True 
         else: 
             from django.core.mail import EmailMultiAlternatives
-            USE_MAILER = False 
+            USE_MAILER = False
 
         for s in qs: 
             subject = _("%s Report") % s.name 
