@@ -1,6 +1,6 @@
 import base64
 import json
-import urllib
+import urllib.request, urllib.parse, urllib.error
 from urllib.request import urlopen
 import datetime
 
@@ -18,7 +18,7 @@ from django.utils.timezone import utc
 
 from app_metrics.models import Metric, MetricItem, Gauge
 # from brabeion import badges
-# from actstream import action
+# #from actstream import action
 #
 # from people.utils import save_user_points
 
@@ -119,10 +119,10 @@ def mixpanel_metric_task(slug, num, properties=None, **kwargs):
     params = {"event": slug, "properties": properties}
     b64_data = base64.b64encode(json.dumps(params))
 
-    data = urllib.urlencode({"data": b64_data})
+    data = urllib.parse.urlencode({"data": b64_data})
     with urllib.request.urlopen(url, data) as f:
         if f.read() == '0':
-            raise MixPanelTrackError(u'MixPanel returned 0')
+            raise MixPanelTrackError('MixPanel returned 0')
 
 
 # Statsd tasks
