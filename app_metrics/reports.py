@@ -17,8 +17,10 @@ def generate_report(metric_set=None, html=False):
     # Get trending data for each metric
     metric_trends = []
     for m in metric_set.metrics.all():
-        data = {'metric': m}
-        data['trends'] = trending_for_metric(m)
+        data = {
+            'metric': m,
+            'trends': trending_for_metric(m)
+        }
         metric_trends.append(data)
 
     send_zero_activity = getattr(settings, 'APP_METRICS_SEND_ZERO_ACTIVITY', True)
@@ -31,7 +33,6 @@ def generate_report(metric_set=None, html=False):
                 continue
         if not activity_today:
             return None, None
-
 
     message = render_to_string('app_metrics/email.txt', {
                             'metric_set': metric_set,

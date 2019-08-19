@@ -1,7 +1,7 @@
 import base64
 import json
 import urllib.request, urllib.parse, urllib.error
-from urllib.request import urlopen
+
 import datetime
 
 try:
