@@ -1,3 +1,5 @@
+from abc import ABC
+
 from django.core.management.base import BaseCommand
 
 from django.conf import settings
@@ -6,7 +8,7 @@ from app_metrics.backends.mixpanel import metric
 from app_metrics.utils import get_backend
 
 
-class Command(BaseCommand):
+class Command(BaseCommand, ABC):
     help = "Move MetricItems from the db backend to MixPanel"
 
     requires_model_validation = True

@@ -1,4 +1,6 @@
 import sys
+from abc import ABC
+
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from app_metrics.models import MetricItem
@@ -6,7 +8,7 @@ from app_metrics.backends.statsd import metric
 from app_metrics.utils import get_backend
 
 
-class Command(BaseCommand):
+class Command(BaseCommand, ABC):
     help = "Move MetricItems from the db backend to statsd"
     requires_model_validation = True
 

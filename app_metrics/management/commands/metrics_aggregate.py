@@ -1,4 +1,6 @@
 import datetime
+from abc import ABC
+
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
@@ -7,7 +9,7 @@ from app_metrics.models import Metric, MetricItem, MetricDay, MetricWeek, Metric
 from app_metrics.utils import week_for_date, month_for_date, year_for_date, get_backend 
 
 
-class Command(BaseCommand):
+class Command(BaseCommand, ABC):
     help = "Aggregate Application Metrics" 
 
     requires_model_validation = True 
