@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from app_metrics.tasks import statsd_metric_task, statsd_timing_task, statsd_gauge_task
 
 

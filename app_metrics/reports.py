@@ -6,6 +6,7 @@ from app_metrics.models import *
 from app_metrics.trending import trending_for_metric
 
 from django.conf import settings
+from django.contrib.auth import get_user_model
 
 
 def generate_report(metric_set=None, html=False):

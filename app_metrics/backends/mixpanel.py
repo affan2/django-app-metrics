@@ -2,6 +2,7 @@
 # See http://mixpanel.com/api/docs/ for more information on their API
 
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from app_metrics.tasks import mixpanel_metric_task
 from app_metrics.tasks import _get_token
 

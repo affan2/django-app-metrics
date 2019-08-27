@@ -1,5 +1,6 @@
 # Backend to store info in Redis
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from app_metrics.tasks import redis_metric_task, redis_gauge_task
 
 

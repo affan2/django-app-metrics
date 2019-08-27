@@ -5,7 +5,7 @@ from django.template import RequestContext
 
 @login_required
 def metric_report_view(request):
-    return render_to_response('app_metrics/reports.html', {}, context_instance=RequestContext(request))
+    return render_to_response('app_metrics/reports.html', {})
 
 
 

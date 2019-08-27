@@ -3,7 +3,8 @@ import string
 from abc import ABC
 
 from django.core.management.base import BaseCommand
-from django.conf import settings 
+from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.utils import translation
 from django.utils.translation import ugettext_lazy as _
@@ -22,6 +23,7 @@ class Command(BaseCommand, ABC):
         """ Send Report E-mails """ 
 
         from django.conf import settings
+from django.contrib.auth import get_user_model
         translation.activate(settings.LANGUAGE_CODE)
 
         backend = get_backend() 

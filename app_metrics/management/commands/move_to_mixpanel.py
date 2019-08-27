@@ -3,6 +3,7 @@ from abc import ABC
 from django.core.management.base import BaseCommand
 
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from app_metrics.models import MetricItem
 from app_metrics.backends.mixpanel import metric
 from app_metrics.utils import get_backend

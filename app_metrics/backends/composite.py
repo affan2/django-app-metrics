@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from importlib import import_module
 
 DEFAULT_BACKENDS = getattr(settings, 'APP_METRICS_COMPOSITE_BACKENDS', [])

@@ -5,8 +5,9 @@ import unittest.mock as mock
 from django.test import TestCase
 from django.core import management
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.core import mail
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from django.core.exceptions import ImproperlyConfigured
 
 from app_metrics.exceptions import TimerError

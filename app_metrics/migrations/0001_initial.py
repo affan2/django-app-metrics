@@ -2,6 +2,7 @@
 
 import datetime
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.db import migrations, models
 import django.db.models.deletion
 from django.utils.timezone import utc
@@ -13,7 +14,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('sites', '0002_alter_domain_unique'),
-        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        migrations.swappable_dependency(get_user_model()),
         ('contenttypes', '0002_remove_content_type_name'),
     ]
 
@@ -82,7 +83,7 @@ class Migration(migrations.Migration):
                 ('send_daily', models.BooleanField(default=True, verbose_name='send daily')),
                 ('send_weekly', models.BooleanField(default=False, verbose_name='send weekly')),
                 ('send_monthly', models.BooleanField(default=False, verbose_name='send monthly')),
-                ('email_recipients', models.ManyToManyField(to=settings.AUTH_USER_MODEL, verbose_name='email recipients')),
+                ('email_recipients', models.ManyToManyField(to=get_user_model(), verbose_name='email recipients')),
                 ('metrics', models.ManyToManyField(to='app_metrics.Metric', verbose_name='metrics')),
             ],
             options={
@@ -114,7 +115,7 @@ class Migration(migrations.Migration):
                 ('item_content_type', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='contenttypes.ContentType')),
                 ('metric', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app_metrics.Metric', verbose_name='metric')),
                 ('site', models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='sites.Site', verbose_name='site')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='user_metricitems', to=settings.AUTH_USER_MODEL, verbose_name='user')),
+                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='user_metricitems', to=get_user_model(), verbose_name='user')),
             ],
             options={
                 'verbose_name': 'metric item',
