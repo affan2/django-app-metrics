@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('sites', '0002_alter_domain_unique'),
-        migrations.swappable_dependency(get_user_model()),
+        migrations.swappable_dependency(get_user_model().__name__),
         ('contenttypes', '0002_remove_content_type_name'),
     ]
 
