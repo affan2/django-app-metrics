@@ -1,7 +1,6 @@
 import datetime
 
 from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.contrib.sites.models import Site
 from django.db import models, IntegrityError
 from django.template.defaultfilters import slugify
@@ -54,7 +53,7 @@ class MetricSet(models.Model):
     """ A set of metrics that should be sent via email to certain users """
     name = models.CharField(_('name'), max_length=50)
     metrics = models.ManyToManyField(Metric, verbose_name=_('metrics'))
-    email_recipients = models.ManyToManyField(get_user_model(), verbose_name=_('email recipients'))
+    email_recipients = models.ManyToManyField(settings.AUTH_USER_MODEL, verbose_name=_('email recipients'))
     no_email = models.BooleanField(_('no e-mail'), default=False)
     send_daily = models.BooleanField(_('send daily'), default=True)
     send_weekly = models.BooleanField(_('send weekly'), default=False)
@@ -70,7 +69,7 @@ class MetricSet(models.Model):
 
 class MetricItem(models.Model):
     """ Individual metric items """
-    user = models.ForeignKey(get_user_model(), verbose_name=_('user'), related_name="user_metricitems", on_delete=models.CASCADE, )
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('user'), related_name="user_metricitems", on_delete=models.CASCADE, )
     metric = models.ForeignKey(Metric, verbose_name=_('metric'), on_delete=models.CASCADE, )
     num = models.IntegerField(_('number'), default=1)
     item_content_type = models.ForeignKey(ContentType, blank=True, null=True, on_delete=models.CASCADE, )
