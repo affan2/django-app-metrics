@@ -50,7 +50,7 @@ class MixPanelTrackError(Exception):
 # DB Tasks
 
 
-@task
+@task(serializer='pickle')
 def db_metric_task(slug, num=1, **kwargs):
     met = Metric.objects.get(slug=slug)
     user = kwargs['user']
@@ -80,7 +80,7 @@ def db_metric_task(slug, num=1, **kwargs):
     #     badges.possibly_award_badge(kwargs['badge']['event'], **kwargs['badge']['state'])
 
 
-@task
+@task(serializer='pickle')
 def db_gauge_task(slug, current_value, **kwargs):
     gauge, created = Gauge.objects.get_or_create(slug=slug, defaults={
         'name': slug,
@@ -103,7 +103,7 @@ def _get_token():
 # Mixpanel tasks
 
 
-@task
+@task(serializer='pickle')
 def mixpanel_metric_task(slug, num, properties=None, **kwargs):
     token = _get_token()
     if properties is None:
@@ -137,14 +137,14 @@ def get_statsd_conn():
     return conn
 
 
-@task
+@task(serializer='pickle')
 def statsd_metric_task(slug, num=1, **kwargs):
     conn = get_statsd_conn()
     counter = statsd.Counter(slug, connection=conn)
     counter += num
 
 
-@task
+@task(serializer='pickle')
 def statsd_timing_task(slug, seconds_taken=1.0, **kwargs):
     conn = get_statsd_conn()
 
@@ -157,7 +157,7 @@ def statsd_timing_task(slug, seconds_taken=1.0, **kwargs):
     timer.send('total', seconds_taken)
 
 
-@task
+@task(serializer='pickle')
 def statsd_gauge_task(slug, current_value, **kwargs):
     conn = get_statsd_conn()
     gauge = statsd.Gauge(slug, connection=conn)
@@ -178,7 +178,7 @@ def get_redis_conn():
     return conn
 
 
-@task
+@task(serializer='pickle')
 def redis_metric_task(slug, num=1, **kwargs):
     # Record a metric in redis. We prefix our key here with 'm' for Metric
     # and build keys for each day, week, month, and year
@@ -198,7 +198,7 @@ def redis_metric_task(slug, num=1, **kwargs):
     r.incrby(year_key, num)
 
 
-@task
+@task(serializer='pickle')
 def redis_gauge_task(slug, current_value, **kwargs):
     # We prefix our keys with a 'g' here for Gauge to avoid issues
     # of having a gauge and metric of the same name
@@ -208,7 +208,7 @@ def redis_gauge_task(slug, current_value, **kwargs):
 # Librato tasks
 
 
-@task
+@task(serializer='pickle')
 def librato_metric_task(name, num, **kwargs):
     api = librato.connect(settings.APP_METRICS_LIBRATO_USER,
                           settings.APP_METRICS_LIBRATO_TOKEN)
